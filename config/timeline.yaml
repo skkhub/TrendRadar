@@ -470,27 +470,29 @@ custom:
       analyze: true                # 夜间可以跑 AI 分析（反正不推送）
       push: false                  # 深夜不推送，避免打扰
 
-    weekday_morning:
-      name: "工作日早间"
-      start: "08:00"
-      end: "10:00"                 # 跨度 2h，留足触发裕量
-      # frequency_file: "xxx.txt"               # 关键词文件（可选，位于 config/custom/keyword/）
-      # interests_file: "xxx.txt"                # AI 兴趣文件（可选，位于 config/custom/ai/）
-      # filter_method: "keyword"                # 筛选策略（可选: keyword | ai，不填用全局 filter.method）
-      push: true                   # 早上推送一次
-      report_mode: "incremental"   # 只推新增内容
-      # once 继承 default（push: true）→ 窗口内只推一次
-
-    weekend_morning:
-      name: "周末早间"
-      start: "10:00"
-      end: "12:00"                 # 跨度 2h
-      # frequency_file: "xxx.txt"               # 关键词文件（可选，位于 config/custom/keyword/）
-      # interests_file: "xxx.txt"                # AI 兴趣文件（可选，位于 config/custom/ai/）
-      # filter_method: "keyword"                # 筛选策略（可选: keyword | ai，不填用全局 filter.method）
+    # 早间两段：先金融后房地产；时间不重叠。各自 interests_file + AI 分析 + 推送各一次。
+    # 定时任务需在 08:00–09:00 内至少触发两次（如 08:05 与 08:35），否则会错过某一窗。
+    morning_finance:
+      name: "早间·金融"
+      start: "07:00"
+      end: "08:30"                 # [07:00, 08:30) 半开区间
+      interests_file: "finance.txt"
+      filter_method: "ai"
+      analyze: true
+      ai_mode: "current"
       push: true
-      report_mode: "daily"         # 周末看全天汇总
-      # once 继承 default（push: true）→ 窗口内只推一次
+      report_mode: "current"
+
+    morning_realestate:
+      name: "早间·北京房地产"
+      start: "08:30"
+      end: "10:00"                 # [08:30, 10:00)，接在金融窗之后
+      interests_file: "beijing_realestate.txt"
+      filter_method: "ai"
+      analyze: true
+      ai_mode: "current"
+      push: true
+      report_mode: "current"
 
     evening_summary:
       name: "晚间汇总"
@@ -515,9 +517,9 @@ custom:
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "weekday_morning", "evening_summary"]
-    weekend:                       # 周末计划（用 weekend_morning 替换 weekday_morning）
-      periods: ["deep_quiet", "weekend_morning", "evening_summary"]
+      periods: ["deep_quiet", "morning_finance", "morning_realestate", "evening_summary"]
+    weekend:                       # 周末计划（早间与工作日相同：8 点金融 + 房地产）
+      periods: ["deep_quiet", "morning_finance", "morning_realestate", "evening_summary"]
 
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

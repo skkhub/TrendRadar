@@ -41,7 +41,7 @@ app:
 # ===============================================================
 schedule:
   enabled: true                         # 是否启用调度系统
-  preset: "morning_evening"             # 预设模板名称（见上方说明）
+  preset: "custom"                      # 早间金融+房地产分段推送，见 config/timeline.yaml → custom
 
 
 # ===============================================================
@@ -213,8 +213,8 @@ ai_filter:
   # 兴趣描述文件
   # 默认使用 config/ai_interests.txt，无需在此配置
   # 这里设置的是“全局默认”，可被 timeline.yaml 时段内的 interests_file 覆盖
-  # 如需使用自定义文件，将文件放入 config/custom/ai/ 目录，然后指定文件名：
-  # interests_file: "finance.txt"    # → 加载 config/custom/ai/finance.txt
+  # 自定义文件放在 config/custom/ai/ 目录：
+  interests_file: "finance.txt"       # → config/custom/ai/finance.txt（股市/金融/投资）
 
   # 全量重分类触发阈值（0~1）
   # change_ratio >= 此值：全量重分类；否则增量更新
