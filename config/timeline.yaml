@@ -470,70 +470,24 @@ custom:
       analyze: true                # 夜间可以跑 AI 分析（反正不推送）
       push: false                  # 深夜不推送，避免打扰
 
-    # 早间两段：先金融后房地产；时间不重叠。各自 interests_file + AI 分析 + 推送各一次。
-    # 定时任务需在对应窗口内各至少触发一次：早间建议在 07:35–08:25；午间 11:35–12:25；傍晚 18:05–18:55。
-    morning_finance:
-      name: "早间·金融"
-      start: "07:30"
-      end: "08:00"                 # [07:30, 08:00) 半开区间
-      interests_file: "finance.txt"
-      filter_method: "ai"
-      analyze: true
-      ai_mode: "current"
-      push: true
-      report_mode: "current"
-
-    morning_realestate:
-      name: "早间·北京房地产"
+    # 早间、午间各一个兴趣窗（金融+北京楼市+AI/新兴科技，同一 interests_file）；傍晚不再触发定向抓取。
+    # 定时任务建议：早间在 [07:30, 08:30) 内至少触发一次；午间在 [11:30, 12:30) 内至少触发一次；晚间仅保留下面的「晚间汇总」。
+    morning_focus:
+      name: "早间·市场/地产/科技"
       start: "08:00"
-      end: "08:30"                 # [08:00, 08:30)，接在金融窗之后
-      interests_file: "beijing_realestate.txt"
+      end: "08:30"                 # [08:00, 08:30) 半开区间
+      interests_file: "finance_realestate_ai_tech.txt"
       filter_method: "ai"
       analyze: true
       ai_mode: "current"
       push: true
       report_mode: "current"
 
-    # 午间 11:30–12:30：金融 → 房地产；与早间相同策略。定时需在 [11:30,12:30) 内至少触发两次。
-    noon_finance:
-      name: "午间·金融"
-      start: "11:30"
-      end: "12:00"                 # [11:30, 12:00) 半开区间
-      interests_file: "finance.txt"
-      filter_method: "ai"
-      analyze: true
-      ai_mode: "current"
-      push: true
-      report_mode: "current"
-
-    noon_realestate:
-      name: "午间·北京房地产"
+    noon_focus:
+      name: "午间·市场/地产/科技"
       start: "12:00"
-      end: "12:30"                 # [12:00, 12:30)，接在金融窗之后
-      interests_file: "beijing_realestate.txt"
-      filter_method: "ai"
-      analyze: true
-      ai_mode: "current"
-      push: true
-      report_mode: "current"
-
-    # 傍晚 18:00–19:00：金融 → 房地产；早于晚间汇总(19:00)。定时需在 [18:00,19:00) 内至少触发两次。
-    pm_finance:
-      name: "傍晚·金融"
-      start: "18:00"
-      end: "18:30"                 # [18:00, 18:30) 半开区间
-      interests_file: "finance.txt"
-      filter_method: "ai"
-      analyze: true
-      ai_mode: "current"
-      push: true
-      report_mode: "current"
-
-    pm_realestate:
-      name: "傍晚·北京房地产"
-      start: "18:30"
-      end: "19:00"                 # [18:30, 19:00)，接在金融窗之后；与 evening_summary 邻接不重叠
-      interests_file: "beijing_realestate.txt"
+      end: "12:30"                 # [12:00, 12:30) 半开区间
+      interests_file: "finance_realestate_ai_tech.txt"
       filter_method: "ai"
       analyze: true
       ai_mode: "current"
@@ -563,9 +517,9 @@ custom:
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   day_plans:
     workday:                       # 工作日计划
-      periods: ["deep_quiet", "morning_finance", "morning_realestate", "noon_finance", "noon_realestate", "pm_finance", "pm_realestate", "evening_summary"]
-    weekend:                       # 周末计划（早间/午间/傍晚与工作日相同）
-      periods: ["deep_quiet", "morning_finance", "morning_realestate", "noon_finance", "noon_realestate", "pm_finance", "pm_realestate", "evening_summary"]
+      periods: ["deep_quiet", "morning_focus", "noon_focus", "evening_summary"]
+    weekend:                       # 周末计划（早间/午间与工作日相同；无傍晚定向窗）
+      periods: ["deep_quiet", "morning_focus", "noon_focus", "evening_summary"]
 
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
